@@ -94,6 +94,14 @@ Mobile and narrow layouts keep the same data but collapse composer availability 
 - Member rows may vary in height to match stacked busy blocks.
 - Event blocks are pale gray, `38px` high, with time and title stacked.
 
+### Event Detail Popover
+
+- 일정 블록, 개인 일정, 월간 일정 칩을 클릭하면 같은 미니 상세 팝오버를 연다.
+- 팝오버는 실제 초대 카드처럼 수정/삭제/더보기/닫기 아이콘, 제목, 시간, 반복, 캘린더, 링크, 알림, 참석자 요약, 수락/미정/거절/상세정보 액션을 보여준다.
+- `상세정보`를 누르면 전체 상세 화면으로 전환되고 좌측에는 일정 정보와 참석자 응답, 우측에는 해당 시간의 빈 시간 그리드를 배치한다.
+- 다른 구성원의 비공개 일정은 제목을 추정하지 않고 `일정있음`, 바쁨 상태, 시간만 노출한다.
+- 데스크톱에서는 클릭한 일정 옆에 붙고, 좁은 화면에서는 하단 시트처럼 고정된다.
+
 ### Event Composer
 
 - Top action bar: save/cancel.

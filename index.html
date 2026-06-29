@@ -338,7 +338,25 @@
             </aside>
           </div>
         </section>
+
+        <section class="detail-screen screen" id="detailScreen" aria-label="일정 상세 화면">
+          <div class="detail-toolbar">
+            <button class="cancel-button" type="button" data-back-calendar>닫기</button>
+            <span></span>
+            <button class="cancel-button" type="button">일정 수정</button>
+            <button class="cancel-button" type="button">일정 삭제</button>
+            <button class="cancel-button" type="button">일정 복사</button>
+            <button class="cancel-button" type="button">iCal 정보 보기</button>
+            <button class="cancel-button" type="button">번역</button>
+          </div>
+          <div class="detail-layout">
+            <article class="full-detail-main" id="detailContent"></article>
+            <aside class="full-detail-availability" id="detailAvailability" aria-label="참석자 빈 시간"></aside>
+          </div>
+        </section>
       </main>
+
+      <aside class="event-detail-popover" id="eventDetail" role="dialog" aria-modal="false" aria-labelledby="eventDetailTitle" hidden></aside>
 
       <div class="datepicker-popover" id="datepickerPopover" hidden>
         <div class="picker-title">

@@ -1,6 +1,9 @@
 const shell = document.querySelector(".app-shell");
 const calendarScreen = document.querySelector("#calendarScreen");
 const composeScreen = document.querySelector("#composeScreen");
+const detailScreen = document.querySelector("#detailScreen");
+const detailContent = document.querySelector("#detailContent");
+const detailAvailability = document.querySelector("#detailAvailability");
 const miniGrid = document.querySelector("#miniGrid");
 const pickerGrid = document.querySelector("#pickerGrid");
 const teamWeekGrid = document.querySelector("#teamWeekGrid");
@@ -17,6 +20,7 @@ const recommendTimeView = document.querySelector("#recommendTimeView");
 const recommendEmpty = document.querySelector("#recommendEmpty");
 const recommendList = document.querySelector("#recommendList");
 const datepickerPopover = document.querySelector("#datepickerPopover");
+const eventDetail = document.querySelector("#eventDetail");
 const roomModal = document.querySelector("#roomModal");
 const roomTree = document.querySelector("#roomTree");
 const selectedRoom = document.querySelector("#selectedRoom");
@@ -68,6 +72,26 @@ const teamDays = [
   { label: "2 목" },
   { label: "3 금" },
   { label: "4 토" },
+];
+
+const teamDateLabels = [
+  "2026.06.28 (일)",
+  "2026.06.29 (월)",
+  "2026.06.30 (화)",
+  "2026.07.01 (수)",
+  "2026.07.02 (목)",
+  "2026.07.03 (금)",
+  "2026.07.04 (토)",
+];
+
+const personalWeekDateLabels = [
+  "2026.06.21 (일)",
+  "2026.06.22 (월)",
+  "2026.06.23 (화)",
+  "2026.06.24 (수)",
+  "2026.06.25 (목)",
+  "2026.06.26 (금)",
+  "2026.06.27 (토)",
 ];
 
 const teamMembers = [
@@ -249,6 +273,8 @@ let currentMode = "team-week";
 let selectedRoomName = "11F_B12";
 let recommendationExpanded = false;
 let onlyFree = true;
+let activeDetailAnchor = null;
+let activeDetailData = null;
 
 function renderMiniGrid() {
   miniGrid.innerHTML = "";
@@ -303,6 +329,414 @@ function renderPickerGrid() {
   });
 }
 
+function splitEventText(text) {
+  const match = text.match(/^((?:오전|오후)\s?\d{1,2}:\d{2})\s+(.+)$/);
+  if (!match) return { time: "종일", title: text };
+  return { time: match[1], title: match[2] };
+}
+
+function getMemberName(memberId) {
+  return teamMembers.find((member) => member.id === memberId)?.name || "구성원";
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+function parseDateLabel(dateLabel) {
+  const match = dateLabel.match(/^(\d{4})\.(\d{2})\.(\d{2}) \((.)\)$/);
+  if (!match) return { full: dateLabel, short: dateLabel };
+  const [, year, month, day, weekday] = match;
+  return {
+    full: `${year}. ${Number(month)}. ${Number(day)}. (${weekday})`,
+    short: `${Number(month)}.${Number(day)}. (${weekday})`,
+  };
+}
+
+function formatClock(value) {
+  const [rawHour, minute] = value.split(":");
+  const hour = Number(rawHour);
+  const period = hour < 12 ? "오전" : "오후";
+  const displayHour = hour <= 12 ? hour : hour - 12;
+  return `${period} ${String(displayHour).padStart(2, "0")}:${minute}`;
+}
+
+function durationLabel(timeRange) {
+  const [start, end] = timeRange.split("~");
+  if (!start || !end) return "";
+  const [startHour, startMinute] = start.split(":").map(Number);
+  const [endHour, endMinute] = end.split(":").map(Number);
+  const minutes = endHour * 60 + endMinute - (startHour * 60 + startMinute);
+  if (minutes <= 0) return "";
+  if (minutes % 60 === 0) return `${minutes / 60}시간`;
+  return `${Math.floor(minutes / 60)}시간 ${minutes % 60}분`;
+}
+
+function formatDateTime(dateLabel, timeRange) {
+  const date = parseDateLabel(dateLabel);
+  if (!timeRange.includes("~")) return `${date.full} ${timeRange}`;
+  const [start, end] = timeRange.split("~");
+  const duration = durationLabel(timeRange);
+  return `${date.full} ${formatClock(start)} - ${formatClock(end)}${duration ? ` (${duration})` : ""}`;
+}
+
+function previewAttendeeLabel(attendeesValue, creator = "신지") {
+  if (attendeesValue === "상세 비공개" || attendeesValue === "해당 없음") return attendeesValue;
+  const names = attendeesValue.split(",").map((name) => name.trim()).filter(Boolean);
+  if (names.length >= 2) return `${names[0]} 외 ${names.length - 1}명`;
+  if (names.length === 1) return names[0];
+  return `${creator} 외 5명`;
+}
+
+function getPersonalEventMeta(title) {
+  const rules = [
+    {
+      keyword: "ui collect",
+      location: "15F_A1",
+      attendees: "신지, 김재엽",
+      memo: "UI Collect 업무 범위와 산출물 기준을 맞추는 회의입니다.",
+    },
+    {
+      keyword: "Antigravity 기본",
+      owner: "Tech Class",
+      location: "온라인",
+      attendees: "신지",
+      status: "참석 예정",
+      memo: "Antigravity 기본 과정 수강 일정입니다.",
+    },
+    {
+      keyword: "Antigravity 심화",
+      owner: "Tech Class",
+      location: "온라인",
+      attendees: "신지",
+      status: "참석 예정",
+      memo: "Antigravity 심화 과정 수강 일정입니다.",
+    },
+    {
+      keyword: "Gemini Enterprise",
+      owner: "Tech Class",
+      location: "온라인",
+      attendees: "신지",
+      status: "참석 예정",
+      memo: "Gemini Enterprise 클래스 참여 일정입니다.",
+    },
+    {
+      keyword: "메타태그",
+      location: "15F_A1",
+      attendees: "AI검색설계",
+      memo: "메타태그 수정과 보완 사항을 공유하는 팀 일정입니다.",
+    },
+    {
+      keyword: "주간 팀미팅",
+      location: "회의실 미정",
+      attendees: "AI검색설계",
+      memo: "이번 주 진행 상황과 의사결정 안건을 맞추는 정기 회의입니다.",
+    },
+    {
+      keyword: "디자인랭귀지",
+      location: "15F_B12",
+      attendees: "디자인 협업 그룹",
+      memo: "화면 밀도와 컴포넌트 언어를 맞추는 디자인 리뷰입니다.",
+    },
+    {
+      keyword: "iSX Play",
+      location: "마니또 3층",
+      attendees: "신지",
+      memo: "사내 이벤트 참여 일정입니다.",
+    },
+    {
+      keyword: "프로젝트",
+      location: "온라인",
+      attendees: "신지",
+      memo: "프로젝트 관련 학습 및 공유 일정입니다.",
+    },
+    {
+      keyword: "제목 없음",
+      location: "없음",
+      attendees: "신지",
+      memo: "제목이 아직 정리되지 않은 개인 일정입니다.",
+    },
+    {
+      keyword: "현충일",
+      owner: "공휴일 캘린더",
+      location: "없음",
+      attendees: "해당 없음",
+      status: "공휴일",
+      memo: "대한민국 공휴일입니다.",
+    },
+    {
+      keyword: "지방선거",
+      owner: "공휴일 캘린더",
+      location: "없음",
+      attendees: "해당 없음",
+      status: "공휴일",
+      memo: "전국동시지방선거 일정입니다.",
+    },
+  ];
+  return rules.find((rule) => title.includes(rule.keyword)) || {};
+}
+
+function buildTeamEventDetail(event) {
+  const memberName = getMemberName(event.member);
+  const isPrivate = event.title === "일정있음";
+  const dateLabel = teamDateLabels[event.day];
+  const attendeeText = isPrivate ? "상세 비공개" : "함다인, 황지수, 주혜신, 우희택, 신지, 은경수";
+  return {
+    title: event.title,
+    calendar: "구성원 일정",
+    dateLabel,
+    timeRange: event.time,
+    time: formatDateTime(dateLabel, event.time),
+    repeat: isPrivate ? "반복 정보 비공개" : "매주 화요일, 무한 반복",
+    owner: isPrivate ? memberName : "함다인 Ham Dain",
+    creator: isPrivate ? memberName : "함다인",
+    attendees: attendeeText,
+    previewAttendees: previewAttendeeLabel(attendeeText, "함다인"),
+    location: isPrivate ? "상세 비공개" : "회의실 미정",
+    status: isPrivate ? "바쁨, 제목 비공개" : "참석 예정",
+    notification: "10분 전 서비스 알림",
+    url: isPrivate ? "" : "https://wiki.navercorp.com/spaces/SEARCHX/pages/5384445071/%EC%8B%B1%ED%81%AC+%EB%AF%B8%ED%8C%85",
+    memo: isPrivate
+      ? "다른 구성원의 일정은 바쁨 여부와 시간만 확인할 수 있습니다."
+      : "주간 진행 상황과 다음 액션을 정리하는 팀 회의입니다.",
+    canRespond: !isPrivate,
+    modified: "함다인 (2026. 6. 11. 오후 01:35)",
+    created: "함다인 (2026. 6. 2. 오후 02:14)",
+  };
+}
+
+function buildPersonalEventDetail(text, dateLabel) {
+  const parsed = splitEventText(text);
+  const meta = getPersonalEventMeta(parsed.title);
+  const attendeeText = meta.attendees || "신지";
+  return {
+    title: parsed.title,
+    calendar: meta.owner === "공휴일 캘린더" ? "공휴일" : "[기본] 신지",
+    dateLabel,
+    timeRange: parsed.time,
+    time: `${parseDateLabel(dateLabel).full} ${parsed.time}`,
+    repeat: "반복 안 함",
+    owner: meta.owner || "신지",
+    creator: meta.owner || "신지",
+    attendees: attendeeText,
+    previewAttendees: previewAttendeeLabel(attendeeText, meta.owner || "신지"),
+    location: meta.location || "없음",
+    status: meta.status || "바쁨",
+    notification: meta.status === "공휴일" ? "알림 없음" : "10분 전 서비스 알림",
+    url: parsed.title.includes("ui collect") ? "https://wiki.navercorp.com/spaces/SEARCHX/pages/ui-collect" : "",
+    memo: meta.memo || "로컬 프로토타입에 등록된 일정입니다.",
+    canRespond: false,
+    modified: "신지 (2026. 6. 26. 오후 01:35)",
+    created: "신지 (2026. 6. 2. 오후 02:14)",
+  };
+}
+
+function monthDateLabel(day) {
+  const dayNumber = String(day).padStart(2, "0");
+  const date = new Date(`2026-06-${dayNumber}T00:00:00`);
+  const weekdays = ["일", "월", "화", "수", "목", "금", "토"];
+  return `2026.06.${dayNumber} (${weekdays[date.getDay()]})`;
+}
+
+function positionEventDetail(anchor) {
+  if (window.innerWidth <= 760) {
+    eventDetail.style.removeProperty("left");
+    eventDetail.style.removeProperty("top");
+    eventDetail.style.removeProperty("width");
+    return;
+  }
+
+  const margin = 12;
+  const width = Math.min(488, window.innerWidth - margin * 2);
+  const anchorRect = anchor.getBoundingClientRect();
+  eventDetail.style.width = `${width}px`;
+
+  let left = anchorRect.right + margin;
+  if (left + width > window.innerWidth - margin) left = anchorRect.left - width - margin;
+  if (left < margin) left = window.innerWidth - width - margin;
+
+  let top = anchorRect.top;
+  const height = eventDetail.offsetHeight;
+  if (top + height > window.innerHeight - margin) top = Math.max(margin, window.innerHeight - height - margin);
+
+  eventDetail.style.left = `${left}px`;
+  eventDetail.style.top = `${top}px`;
+}
+
+function rowIcon(path) {
+  return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${path}"/></svg>`;
+}
+
+function renderPreviewDetail(detail) {
+  const responseActions = detail.canRespond
+    ? `
+      <button class="response-button primary" type="button" data-response-action="수락">수락</button>
+      <button class="response-button" type="button" data-response-action="미정">미정</button>
+      <button class="response-button" type="button" data-response-action="거절">거절</button>
+    `
+    : "";
+  const urlRow = detail.url
+    ? `
+      <li>
+        ${rowIcon("M5 4h14v16H5zM8 8h8M8 12h8M8 16h5")}
+        <a href="${escapeHtml(detail.url)}" target="_blank" rel="noreferrer">${escapeHtml(detail.url)}</a>
+      </li>
+    `
+    : "";
+
+  eventDetail.innerHTML = `
+    <div class="event-preview-tools">
+      <button type="button" aria-label="일정 수정">${rowIcon("M4 20h4l10.5-10.5a2.8 2.8 0 0 0-4-4L4 16v4Z")}</button>
+      <button type="button" aria-label="일정 삭제">${rowIcon("M5 7h14M10 11v6M14 11v6M8 7l1-3h6l1 3M7 7l1 14h8l1-14")}</button>
+      <button type="button" aria-label="더보기">${rowIcon("M12 6v.1M12 12v.1M12 18v.1")}</button>
+      <button type="button" aria-label="일정 상세 닫기" data-close-event-detail>${rowIcon("M6 6l12 12M18 6 6 18")}</button>
+    </div>
+    <h2 id="eventDetailTitle">${escapeHtml(detail.title)}</h2>
+    <ul class="event-preview-list">
+      <li>${rowIcon("M12 7v5l3 2M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Z")}<span>${escapeHtml(detail.time)}</span></li>
+      <li>${rowIcon("M17 2v5M7 2v5M4 11h16M5 5h14v16H5z")}<span>${escapeHtml(detail.repeat)}</span></li>
+      <li>${rowIcon("M5 5h14v14H5zM8 9h8M8 13h5")}<span>${escapeHtml(detail.calendar)}</span></li>
+      ${urlRow}
+      <li>${rowIcon("M18 9a6 6 0 0 0-12 0c0 7-3 6-3 8h18c0-2-3-1-3-8M10 20h4")}<span>${escapeHtml(detail.notification)}</span></li>
+      <li>${rowIcon("M16 19c0-2-1.8-3.5-4-3.5S8 17 8 19M8.5 9a3.5 3.5 0 1 0 7 0 3.5 3.5 0 0 0-7 0ZM20 19c0-1.6-1.2-2.8-3-3.2M4 19c0-1.6 1.2-2.8 3-3.2")}<span>${escapeHtml(detail.previewAttendees)} <b>${escapeHtml(detail.creator ? `(생성자: ${detail.creator})` : "")}</b></span></li>
+    </ul>
+    <div class="event-preview-actions">
+      ${responseActions}
+      <button class="detail-link-button" type="button" data-open-full-detail>상세정보</button>
+    </div>
+  `;
+  eventDetail.querySelector("[data-close-event-detail]").addEventListener("click", closeEventDetail);
+  eventDetail.querySelector("[data-open-full-detail]").addEventListener("click", () => openFullDetail(detail));
+  eventDetail.querySelectorAll("[data-response-action]").forEach((button) => {
+    button.addEventListener("click", () => showToast(`${button.dataset.responseAction} 상태로 표시했습니다.`));
+  });
+}
+
+function openEventDetail(detail, anchor) {
+  activeDetailAnchor = anchor;
+  activeDetailData = detail;
+  renderPreviewDetail(detail);
+  eventDetail.hidden = false;
+  positionEventDetail(anchor);
+}
+
+function closeEventDetail() {
+  eventDetail.hidden = true;
+  activeDetailAnchor = null;
+}
+
+function attendeeRows(detail) {
+  if (detail.attendees === "상세 비공개" || detail.attendees === "해당 없음") {
+    return `<p class="detail-muted">${escapeHtml(detail.attendees)}</p>`;
+  }
+  const names = detail.attendees.split(",").map((name) => name.trim()).filter(Boolean);
+  return `
+    <div class="detail-attendee-grid">
+      ${names.map((name, index) => `
+        <div class="detail-attendee">
+          <span class="required-pill">필수</span>
+          <span class="attendee-small-avatar">${escapeHtml(name.slice(0, 1))}</span>
+          <strong>${escapeHtml(name)}</strong>
+          <i>✓</i>
+        </div>
+      `).join("")}
+    </div>
+    <p class="detail-attendee-summary">전체 ${names.length}명&nbsp;&nbsp; 수락 ${Math.max(names.length - 1, 0)}, 미정 0, 거절 0, 대기 0 &nbsp; <button type="button">메시지</button> <button type="button">메일</button></p>
+  `;
+}
+
+function detailAvailabilityHtml(detail) {
+  const names = detail.attendees === "상세 비공개"
+    ? [detail.owner]
+    : detail.attendees.split(",").map((name) => name.trim()).filter(Boolean).slice(0, 6);
+  const hours = ["0~", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"];
+  const rows = names.map((name, rowIndex) => {
+    const cells = hours.slice(1).map((hour, index) => {
+      const selected = index === 3;
+      const busy = (rowIndex + index) % 7 === 0;
+      return `<span class="${selected ? "selected" : busy ? "busy" : "free"}">${escapeHtml(hour)}</span>`;
+    }).join("");
+    return `<div class="detail-avail-person">${escapeHtml(name)}</div>${cells}`;
+  }).join("");
+  return `
+    <div class="detail-availability-head">
+      <button type="button" aria-label="이전 날짜">‹</button>
+      <button type="button" aria-label="다음 날짜">›</button>
+      <strong>${escapeHtml(parseDateLabel(detail.dateLabel).full)}</strong>
+      <span class="refresh-dot"></span>
+    </div>
+    <div class="detail-legend">
+      <span><i class="selected"></i>설정시간</span>
+      <span><i class="recommend"></i>추천시간</span>
+      <span><i class="busy"></i>일정있음</span>
+      <button type="button" aria-label="닫기">×</button>
+    </div>
+    <div class="detail-availability-grid" style="--detail-rows:${names.length}">
+      <div class="detail-avail-corner"></div>
+      ${hours.slice(1).map((hour) => `<div class="detail-avail-hour">${escapeHtml(hour)}</div>`).join("")}
+      ${rows}
+    </div>
+    <ul class="availability-help detail-help">
+      <li>일정있음 영역에 마우스를 올리면 일정 제목이 노출됩니다.</li>
+      <li>약속 참석자가 100명이 넘을 경우 설비의 빈 시간만 확인할 수 있습니다.</li>
+    </ul>
+  `;
+}
+
+function renderFullDetail(detail) {
+  detailContent.innerHTML = `
+    <div class="detail-response-row">
+      ${detail.canRespond ? `
+        <button class="response-button primary" type="button">수락</button>
+        <button class="response-button" type="button">미정</button>
+        <button class="response-button" type="button">거절</button>
+      ` : ""}
+    </div>
+    <h1>${escapeHtml(detail.title)}</h1>
+    <dl class="full-detail-list">
+      <div><dt>${rowIcon("M12 7v5l3 2M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Z")}</dt><dd>${escapeHtml(detail.time)}</dd></div>
+      <div><dt>${rowIcon("M17 2v5M7 2v5M4 11h16M5 5h14v16H5z")}</dt><dd>${escapeHtml(detail.repeat)}</dd></div>
+      <div><dt>${rowIcon("M5 5h14v14H5zM8 9h8M8 13h5")}</dt><dd><span class="calendar-chip"></span>${escapeHtml(detail.calendar)}</dd></div>
+    </dl>
+    <section class="full-detail-section">${attendeeRows(detail)}</section>
+    ${detail.url ? `<section class="full-detail-section link-section">${rowIcon("M5 4h14v16H5zM8 8h8M8 12h8M8 16h5")}<a href="${escapeHtml(detail.url)}" target="_blank" rel="noreferrer">${escapeHtml(detail.url)}</a></section>` : ""}
+    <section class="full-detail-section">
+      <div class="full-detail-setting">${rowIcon("M18 9a6 6 0 0 0-12 0c0 7-3 6-3 8h18c0-2-3-1-3-8M10 20h4")}<span>${escapeHtml(detail.notification)}</span></div>
+      <div class="full-detail-setting">${rowIcon("M7 3h10M9 3v5l-4 7a4 4 0 0 0 3.5 6h7a4 4 0 0 0 3.5-6l-4-7V3")}<span>${escapeHtml(detail.status)}</span></div>
+    </section>
+    <section class="detail-meta">
+      <p>최근 수정 : ${escapeHtml(detail.modified)}</p>
+      <p>생성자 : ${escapeHtml(detail.created)}</p>
+    </section>
+    <button class="cancel-button detail-bottom-close" type="button" data-close-full-detail>닫기</button>
+  `;
+  detailAvailability.innerHTML = detailAvailabilityHtml(detail);
+  detailContent.querySelector("[data-close-full-detail]").addEventListener("click", () => setScreen("calendar"));
+}
+
+function openFullDetail(detail = activeDetailData) {
+  if (!detail) return;
+  activeDetailData = detail;
+  closeEventDetail();
+  renderFullDetail(detail);
+  setScreen("detail");
+}
+
+function wireEventDetailButton(button, detail) {
+  button.dataset.eventDetailTrigger = "true";
+  button.setAttribute("aria-haspopup", "dialog");
+  button.setAttribute("aria-label", `${detail.title} 상세 보기`);
+  button.addEventListener("click", (event) => {
+    event.stopPropagation();
+    openEventDetail(detail, button);
+  });
+}
+
 function renderTeamWeekGrid() {
   teamWeekGrid.innerHTML = "";
   const head = document.createElement("div");
@@ -343,13 +777,14 @@ function renderTeamWeekGrid() {
 }
 
 function eventBlock(event) {
+  const detail = buildTeamEventDetail(event);
   const block = document.createElement("button");
   block.type = "button";
   block.className = `event-pill ${event.own ? "own" : ""} ${event.narrow ? "narrow" : ""}`;
   block.style.top = `${event.top}px`;
   block.style.height = `${event.height}px`;
   block.innerHTML = `<strong>${event.time}</strong><span>${event.title}</span>`;
-  block.addEventListener("click", () => showToast(`${event.time} ${event.title}`));
+  wireEventDetailButton(block, detail);
   return block;
 }
 
@@ -370,12 +805,14 @@ function renderPersonalDay() {
     { top: 240, height: 86, text: "오후 02:00 [Tech Class] Antigravity 기본 과정 (온라인)" },
     { top: 327, height: 86, text: "오후 04:00 [Tech Class] Antigravity 심화 과정 (온라인)" },
   ].forEach((event) => {
+    const detail = buildPersonalEventDetail(event.text, "2026.06.26 (금)");
     const node = document.createElement("button");
     node.type = "button";
     node.className = "day-event";
     node.style.top = `${event.top}px`;
     node.style.height = `${event.height}px`;
     node.textContent = event.text;
+    wireEventDetailButton(node, detail);
     lane.append(node);
   });
 }
@@ -411,12 +848,14 @@ function renderPersonalWeek() {
     weeklyEvents
       .filter((event) => event.day === dayIndex)
       .forEach((event) => {
+        const detail = buildPersonalEventDetail(event.text, personalWeekDateLabels[event.day]);
         const node = document.createElement("button");
         node.type = "button";
         node.className = "week-event";
         node.style.top = `${event.top}px`;
         node.style.height = `${event.height}px`;
         node.textContent = event.text;
+        wireEventDetailButton(node, detail);
         col.append(node);
       });
     personalWeekGrid.append(col);
@@ -470,7 +909,17 @@ function renderMonthView() {
   monthCells.forEach(([day, cls, schedules]) => {
     const cell = document.createElement("div");
     cell.className = `month-cell ${cls}`;
-    cell.innerHTML = `<strong>${day}</strong>${schedules.map((item) => `<span class="month-chip">${item}</span>`).join("")}`;
+    const date = document.createElement("strong");
+    date.textContent = day;
+    cell.append(date);
+    schedules.forEach((item) => {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "month-chip";
+      chip.textContent = item;
+      wireEventDetailButton(chip, buildPersonalEventDetail(item, monthDateLabel(day)));
+      cell.append(chip);
+    });
     monthGridView.append(cell);
   });
 }
@@ -640,11 +1089,14 @@ function setScreen(screen) {
   shell.dataset.screen = screen;
   calendarScreen.classList.toggle("active", screen === "calendar");
   composeScreen.classList.toggle("active", screen === "compose");
+  detailScreen.classList.toggle("active", screen === "detail");
   datepickerPopover.hidden = true;
+  if (screen !== "detail") closeEventDetail();
 }
 
 function setCalendarMode(mode) {
   currentMode = mode;
+  closeEventDetail();
   const isPersonal = mode.startsWith("personal");
   shell.classList.toggle("personal-mode", isPersonal);
   teamWeekGrid.hidden = mode !== "team-week";
@@ -758,11 +1210,23 @@ roomModal.addEventListener("click", (event) => {
   if (event.target === roomModal) roomModal.hidden = true;
 });
 
+document.addEventListener("click", (event) => {
+  if (eventDetail.hidden) return;
+  if (eventDetail.contains(event.target)) return;
+  if (event.target.closest("[data-event-detail-trigger]")) return;
+  closeEventDetail();
+});
+
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
     roomModal.hidden = true;
     datepickerPopover.hidden = true;
+    closeEventDetail();
   }
+});
+
+window.addEventListener("resize", () => {
+  if (!eventDetail.hidden && activeDetailAnchor) positionEventDetail(activeDetailAnchor);
 });
 
 renderMiniGrid();

@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="CONNECT 캘린더 로컬 고충실도 프로토타입">
+    <title>CONNECT Calendar Local Prototype</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231a73e8'/%3E%3Cpath d='M9 10h14M9 16h14M9 22h9' stroke='white' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <div class="app-shell" data-screen="calendar">
+      <header class="topbar">
+        <div class="brand-area">
+          <button class="icon-button ghost" type="button" aria-label="메뉴">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+          </button>
+          <a class="brand-mark" href="#" aria-label="CONNECT 캘린더 홈">
+            <span>CO</span><strong>NN</strong><span>ECT</span>
+            <b>캘린더</b>
+          </a>
+        </div>
+
+        <label class="top-search" data-calendar-search>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.6-4.6M10.8 18a7.2 7.2 0 1 1 0-14.4 7.2 7.2 0 0 1 0 14.4Z"/></svg>
+          <input type="search" value="내 일정 검색" aria-label="내 일정 검색">
+          <button type="button" aria-label="검색 필터">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6v12M16 6v12M5 9h6M13 15h6"/></svg>
+          </button>
+        </label>
+
+        <div class="app-icons" aria-label="앱 바로가기">
+          <span class="app-dot green"></span>
+          <span class="app-dot mail"></span>
+          <span class="app-dot calendar"></span>
+          <span class="app-dot note"></span>
+          <span class="app-dot cube"></span>
+          <span class="app-dot check"></span>
+          <button class="icon-button ghost grid" type="button" aria-label="전체 앱">
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+          </button>
+          <i class="top-separator"></i>
+          <button class="icon-button ghost badge" type="button" aria-label="알림">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 6-3 8h18c0-2-3-1-3-8M10 20h4"/></svg>
+            <span>N</span>
+          </button>
+          <button class="icon-button ghost" type="button" aria-label="조직도">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v5M7 19v-4h10v4M7 15l5-5 5 5M5 21h4M15 21h4"/></svg>
+          </button>
+          <button class="icon-button ghost" type="button" aria-label="도움말">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.2 9a3 3 0 1 1 4.9 2.3c-1.1.8-1.7 1.4-1.7 2.7M12 17.8v.2M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Z"/></svg>
+          </button>
+          <button class="icon-button ghost" type="button" aria-label="설정">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.2A3.2 3.2 0 1 0 12 8.8a3.2 3.2 0 0 0 0 6.4ZM19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2 3.4-.2-.1a1.7 1.7 0 0 0-1.9.3 1.7 1.7 0 0 0-.8 1.6v.2H9.1v-.2a1.7 1.7 0 0 0-.8-1.6 1.7 1.7 0 0 0-1.9-.3l-.2.1-2-3.4.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.3-1.1H3V10h.3a1.7 1.7 0 0 0 1.3-1.1 1.7 1.7 0 0 0-.3-1.9l-.1-.1 2-3.4.2.1a1.7 1.7 0 0 0 1.9-.3 1.7 1.7 0 0 0 .8-1.6V1.5h5.8v.2a1.7 1.7 0 0 0 .8 1.6 1.7 1.7 0 0 0 1.9.3l.2-.1 2 3.4-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.3 1.1h.3v3.9h-.3a1.7 1.7 0 0 0-1.3 1.1Z"/></svg>
+          </button>
+          <button class="profile-button" type="button" aria-label="프로필"><span>신</span></button>
+        </div>
+      </header>
+
+      <aside class="left-sidebar">
+        <button class="compose-button" type="button" data-open-compose>일정쓰기</button>
+
+        <section class="mini-month" aria-labelledby="miniMonthTitle">
+          <div class="mini-title">
+            <button class="plain-icon" type="button" aria-label="월 펼치기">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 10 4 4 4-4"/></svg>
+            </button>
+            <h2 id="miniMonthTitle">2026. 06</h2>
+            <button class="year-button" type="button">1년</button>
+            <button class="month-nav" type="button" aria-label="이전 달">‹</button>
+            <button class="month-nav" type="button" aria-label="다음 달">›</button>
+          </div>
+          <div class="mini-grid" id="miniGrid"></div>
+        </section>
+
+        <nav class="side-nav" aria-label="캘린더 메뉴">
+          <button class="nav-item active" type="button" data-view="team-week">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 19c0-2-1.8-3.5-4-3.5S8 17 8 19M7 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM17 12a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM3 19c0-1.7 1.4-3 3.4-3M20.8 19c0-1.7-1.3-3-3.2-3"/></svg>
+            AI검색설계
+          </button>
+          <button class="nav-item" type="button" data-view="personal-week">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h12v14H6zM9 9h6M9 13h6"/></svg>
+            다른 조직 일정보기
+          </button>
+        </nav>
+
+        <section class="side-group">
+          <button class="group-title" type="button">
+            <span>즐겨찾는 일정</span>
+          </button>
+          <button class="add-favorite" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+            즐겨찾는 일정 추가
+          </button>
+        </section>
+
+        <section class="personal-calendars">
+          <button class="nav-item full active soft" type="button" data-view="personal-week">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8M5 7h14v13H5zM8 11h8M8 15h5"/></svg>
+            전체 일정 보기
+          </button>
+          <div class="calendar-list-title">
+            <span>내 캘린더</span>
+            <button type="button" aria-label="내 캘린더 추가">+</button>
+            <button type="button" aria-label="캘린더 설정">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM19 12h2M3 12h2M12 3v2M12 19v2"/></svg>
+            </button>
+          </div>
+          <label class="check-row"><input type="checkbox" checked> [기본] 신지</label>
+          <label class="check-row"><input type="checkbox" checked> 할 일</label>
+        </section>
+
+        <div class="sidebar-footer">
+          <strong>© NAVER Corp.</strong>
+          <span>Timezone: Asia/Seoul</span>
+        </div>
+      </aside>
+
+      <main class="main-stage">
+        <section class="calendar-screen screen active" id="calendarScreen" aria-label="캘린더 화면">
+          <div class="calendar-toolbar">
+            <div class="date-control">
+              <button class="control-button" type="button">오늘</button>
+              <button class="arrow-button" type="button" aria-label="이전 기간">‹</button>
+              <button class="arrow-button" type="button" aria-label="다음 기간">›</button>
+              <h1 id="calendarTitle">06.28-07.04</h1>
+            </div>
+            <div class="view-switchers">
+              <div class="mode-group">
+                <span>개인</span>
+                <div class="segmented" data-personal-view>
+                  <button type="button" data-view-mode="day">일간</button>
+                  <button type="button" data-view-mode="week">주간</button>
+                  <button type="button" data-view-mode="month">월간</button>
+                  <button type="button" data-view-mode="list">목록</button>
+                  <button type="button">2 일</button>
+                </div>
+              </div>
+              <div class="mode-group">
+                <span>구성원</span>
+                <div class="segmented" data-team-view>
+                  <button type="button" data-team-mode="day">일간</button>
+                  <button type="button" data-team-mode="week" class="active">주간</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="team-filter-bar" data-team-filter>
+            <label class="member-search">
+              <input type="search" value="구성원, 조직, 그룹 검색" aria-label="구성원 검색">
+              <span></span>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.6-4.6M10.8 18a7.2 7.2 0 1 1 0-14.4 7.2 7.2 0 0 1 0 14.4Z"/></svg>
+            </label>
+            <strong>AI검색설계</strong>
+            <span>하위조직 포함</span>
+            <button class="toggle-button" type="button" aria-label="하위조직 포함"><span></span></button>
+          </div>
+
+          <div class="calendar-workspace">
+            <div class="team-week-grid" id="teamWeekGrid"></div>
+            <div class="personal-day-grid" id="personalDayGrid" hidden></div>
+            <div class="personal-week-grid" id="personalWeekGrid" hidden></div>
+            <div class="month-grid-view" id="monthGridView" hidden></div>
+          </div>
+        </section>
+
+        <section class="compose-screen screen" id="composeScreen" aria-label="일정 쓰기 화면">
+          <div class="compose-action-bar">
+            <button class="save-button" type="button" data-save-event>저장</button>
+            <button class="cancel-button" type="button" data-back-calendar>취소</button>
+          </div>
+          <div class="compose-layout">
+            <form class="event-form">
+              <div class="form-line title-line">
+                <span class="line-icon">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 4 2.5 5.3 5.5.8-4 4 1 5.5-5-2.7-5 2.7 1-5.5-4-4 5.5-.8Z"/></svg>
+                </span>
+                <input type="text" value="" placeholder="제목을 입력하세요." aria-label="일정 제목">
+              </div>
+
+              <div class="form-line time-line">
+                <span class="line-icon">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7v5l3 2M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Z"/></svg>
+                </span>
+                <button class="field-button active" type="button" data-datepicker>2026. 6. 29. (월)</button>
+                <button class="field-button" type="button" data-time-start>오전 09:30</button>
+                <span class="range-dash">-</span>
+                <button class="field-button" type="button">2026. 6. 29. (월)</button>
+                <button class="field-button" type="button" data-time-end>오전 10:30</button>
+                <button class="link-button" type="button">시간대 변경</button>
+              </div>
+
+              <div class="form-line repeat-line">
+                <span class="line-icon"></span>
+                <label class="switch-label"><span>종일</span><input type="checkbox"><i></i></label>
+                <button class="select-button" type="button">반복 안 함</button>
+              </div>
+
+              <div class="form-line calendar-line">
+                <span class="line-icon">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v4M17 3v4M4 8h16M5 5h14v16H5z"/></svg>
+                </span>
+                <button class="select-button wide" type="button"><span class="calendar-chip"></span>[기본] 신지</button>
+              </div>
+
+              <div class="section-divider"></div>
+
+              <div class="form-line attendee-line">
+                <span class="line-icon">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 19c0-2-1.8-3.5-4-3.5S8 17 8 19M8.5 9a3.5 3.5 0 1 0 7 0 3.5 3.5 0 0 0-7 0ZM20 19c0-1.6-1.2-2.8-3-3.2M4 19c0-1.6 1.2-2.8 3-3.2"/></svg>
+                </span>
+                <input type="text" value="" placeholder="참석자를 추가하세요." aria-label="참석자 추가">
+                <button class="address-button" type="button">주소록</button>
+              </div>
+
+              <div class="attendee-box" id="attendeeBox"></div>
+
+              <div class="form-line">
+                <span class="line-icon">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h12v10H4zM16 10l4-2v8l-4-2"/></svg>
+                </span>
+                <button class="select-button wide" type="button">화상 회의 추가</button>
+              </div>
+
+              <div class="form-line">
+                <span class="line-icon">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 20h10M9 4h6v4l4 4v6H5v-6l4-4z"/></svg>
+                </span>
+                <button class="outline-button" type="button" data-open-room>CONNECT 예약</button>
+              </div>
+
+              <div class="form-line">
+                <span class="line-icon">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-4.7 7-11a7 7 0 1 0-14 0c0 6.3 7 11 7 11ZM12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/></svg>
+                </span>
+                <input type="text" value="" placeholder="장소를 입력하세요." aria-label="장소">
+              </div>
+
+              <div class="form-line">
+                <span class="line-icon"></span>
+                <button class="outline-button" type="button">지도 첨부</button>
+              </div>
+
+              <div class="form-line memo-line">
+                <span class="line-icon">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5"/></svg>
+                </span>
+                <textarea placeholder="메모를 작성하세요." aria-label="메모"></textarea>
+              </div>
+
+              <div class="form-line file-line">
+                <span class="line-icon">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 12-8.5 8.5a5 5 0 0 1-7-7L14 5a3.2 3.2 0 0 1 4.5 4.5l-8.3 8.3a1.5 1.5 0 0 1-2.1-2.1L16 7.8"/></svg>
+                </span>
+                <button class="outline-button" type="button">내 PC</button>
+                <span class="capacity">0KB/100.00MB</span>
+              </div>
+
+              <div class="form-line radio-line">
+                <span class="line-icon">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 11V8a5 5 0 0 1 10 0v3M5 11h14v10H5z"/></svg>
+                </span>
+                <label><input type="radio" name="open" checked> 공개</label>
+                <label><input type="radio" name="open"> 비공개</label>
+              </div>
+
+              <div class="form-settings">
+                <span>내 설정</span>
+                <div class="form-line compact">
+                  <span class="line-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h12l4 5-4 5H4z"/></svg>
+                  </span>
+                  <button class="select-button" type="button">범주 없음</button>
+                  <button class="outline-button" type="button">범주 수정</button>
+                </div>
+                <div class="form-line compact">
+                  <span class="line-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 6-3 8h18c0-2-3-1-3-8M10 20h4"/></svg>
+                  </span>
+                  <button class="select-button" type="button">10분 전</button>
+                  <label><input type="radio" name="notify" checked> 서비스 알림</label>
+                  <label><input type="radio" name="notify"> 메일 알림</label>
+                  <button class="text-close" type="button" aria-label="알림 삭제">×</button>
+                </div>
+                <button class="add-alarm" type="button">알림 추가</button>
+                <div class="form-line compact">
+                  <span class="line-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10M9 3v5l-4 7a4 4 0 0 0 3.5 6h7a4 4 0 0 0 3.5-6l-4-7V3"/></svg>
+                  </span>
+                  <label><input type="radio" name="busy" checked> 바쁨</label>
+                  <label><input type="radio" name="busy"> 한가함</label>
+                </div>
+              </div>
+            </form>
+
+            <div class="splitter" aria-hidden="true"><span></span></div>
+
+            <aside class="availability-panel">
+              <div class="availability-tabs">
+                <button class="active" type="button" data-avail-tab="empty">빈 시간 확인</button>
+                <button type="button" data-avail-tab="recommend">추천 시간</button>
+              </div>
+              <div class="empty-time-view" id="emptyTimeView">
+                <div class="availability-head">
+                  <div class="arrow-mini">
+                    <button type="button" aria-label="이전 날짜">‹</button>
+                    <button type="button" aria-label="다음 날짜">›</button>
+                  </div>
+                  <strong>2026. 6. 29. (월)</strong>
+                  <span class="refresh-dot"></span>
+                  <div class="legend">
+                    <span><i class="selected"></i>설정시간</span>
+                    <span><i class="recommend"></i>추천시간</span>
+                    <span><i class="busy"></i>일정있음</span>
+                    <button type="button" aria-label="닫기">×</button>
+                  </div>
+                </div>
+                <div class="availability-grid" id="availabilityGrid"></div>
+                <ul class="availability-help">
+                  <li>원하는 시간을 클릭하여 약속시간을 변경하세요.</li>
+                  <li>일정있음 영역에 마우스를 올리면 일정 제목이 노출됩니다.</li>
+                  <li>약속 참석자가 100명이 넘을 경우 설비의 빈 시간만 확인할 수 있습니다.</li>
+                </ul>
+              </div>
+              <div class="recommend-time-view" id="recommendTimeView" hidden>
+                <div class="recommend-top">
+                  <label class="switch-label right"><span>모두 가능한 시간만 보기</span><input type="checkbox" checked data-only-free><i></i></label>
+                  <button class="more-button" type="button" aria-label="추천 시간 메뉴">⋮</button>
+                </div>
+                <div class="recommend-empty" id="recommendEmpty">
+                  <p>참석자를 추가하고 추천 시간을 확인해 보세요.</p>
+                  <button type="button" data-show-recommend>추천 시간 보기</button>
+                </div>
+                <div class="recommend-list" id="recommendList" hidden></div>
+                <p class="recommend-note">소속 회사 및 다른 계열사 구성원들이 참석 가능한 시간을 바탕으로 적절한 일정 시간을 추천합니다.</p>
+              </div>
+            </aside>
+          </div>
+        </section>
+      </main>
+
+      <div class="datepicker-popover" id="datepickerPopover" hidden>
+        <div class="picker-title">
+          <button type="button">≪</button>
+          <button type="button">‹</button>
+          <strong>2026. 6.</strong>
+          <button type="button">›</button>
+          <button type="button">≫</button>
+        </div>
+        <div class="picker-grid" id="pickerGrid"></div>
+        <button class="today-button" type="button">오늘</button>
+      </div>
+
+      <div class="modal-backdrop" id="roomModal" hidden>
+        <section class="room-modal" role="dialog" aria-modal="true" aria-labelledby="roomModalTitle">
+          <button class="modal-close" type="button" data-close-room aria-label="닫기">×</button>
+          <h2 id="roomModalTitle">CONNECT 예약</h2>
+          <p>예약이 불가능한 설비는 회색으로 표시됩니다.</p>
+          <div class="room-tree" id="roomTree"></div>
+          <div class="selected-room" id="selectedRoom"></div>
+          <div class="modal-actions">
+            <button class="cancel-button" type="button" data-close-room>취소</button>
+            <button class="save-button" type="button" data-close-room>예약</button>
+          </div>
+        </section>
+      </div>
+
+      <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

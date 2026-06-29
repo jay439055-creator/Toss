@@ -110,6 +110,14 @@ Mobile and narrow layouts keep the same data but collapse composer availability 
 - Gray area means busy/unavailable.
 - Selected time uses blue outline rather than a filled badge.
 
+### Recommendation Decision Cards
+
+- 추천 시간은 단순 칩 목록이 아니라 날짜별 후보 카드로 보여준다.
+- 카드에는 시간, 추천 라벨, 추천 이유, 충족 신호, 남은 trade-off, 확정 액션이 함께 있어야 한다.
+- 파란 라벨은 바로 확정 가능한 추천/빠른 확정, 회색 라벨은 확인 필요 또는 낮은 우선순위를 뜻한다.
+- 대안 시간은 카드 하단의 작은 칩으로 제공하되, 주 판단 대상은 카드 전체다.
+- 카드 배경은 `--surface-base`, 선택 카드는 `rgba(var(--brand-blue), 0.05)` 수준으로만 강조한다.
+
 ### Room Modal
 
 - Centered dialog with large white surface and restrained shadow.

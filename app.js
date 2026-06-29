@@ -133,13 +133,82 @@ const freePattern = [
   ["free", "free", "busy", "free", "free", "free", "free", "free", "free", "busy", "free", "free", "free", "free", "free", "free"],
 ];
 
-const recommendGroups = [
-  { day: "6.29. (월)", chips: ["오후 01:00", "오후 01:30", "오후 02:00", "오후 02:30", "오후 03:00", "오후 03:30", "오후 04:00", "오후 06:00"] },
-  { day: "6.30. (화)", chips: ["오전 08:00", "오전 08:30", "오전 09:00", "오전 09:30", "오전 10:00", "오후 12:00", "오후 12:30", "오후 01:00", "오후 03:00", "오후 03:30", "오후 04:00", "오후 04:30", "오후 05:00", "오후 05:30", "오후 06:00"] },
-  { day: "7.1. (수)", chips: ["오전 08:00", "오전 08:30", "오전 09:00", "오전 09:30", "오전 10:00", "오전 10:30", "오전 11:00", "오전 11:30", "오후 12:00", "오후 02:00", "오후 02:30", "오후 03:00", "오후 03:30", "오후 06:00"] },
-  { day: "7.2. (목)", chips: ["오전 08:00", "오전 08:30", "오전 09:00", "오전 09:30", "오전 10:00", "오전 10:30", "오전 11:00", "오전 11:30", "오후 12:00", "오후 12:30", "오후 01:00", "오후 01:30", "오후 02:00", "오후 02:30", "오후 03:00", "오후 05:00", "오후 05:30", "오후 06:00"] },
-  { day: "7.3. (금)", chips: ["오전 08:00", "오전 08:30", "오전 09:00", "오전 09:30", "오전 10:00", "오전 10:30", "오전 11:00", "오전 11:30", "오후 12:00", "오후 12:30", "오후 01:00", "오후 01:30", "오후 02:00", "오후 02:30", "오후 03:00", "오후 03:30", "오후 04:00", "오후 04:30", "오후 05:00", "오후 05:30", "오후 06:00"] },
-  { day: "7.6. (월)", chips: ["오전 08:00", "오전 08:30", "오전 09:00", "오전 09:30", "오전 10:00", "오전 10:30", "오전 11:00", "오전 11:30", "오후 12:00", "오후 12:30", "오후 01:00", "오후 01:30", "오후 02:00", "오후 04:00", "오후 04:30", "오후 05:00", "오후 05:30", "오후 06:00"] },
+const recommendCandidateGroups = [
+  {
+    day: "6.29. (월)",
+    candidates: [
+      {
+        time: "오후 01:00",
+        range: "13:00-14:00",
+        label: "추천",
+        tone: "best",
+        title: "깊은 논의에 가장 안정적인 후보",
+        reason: "필수 참석자 2명과 회의실이 모두 가능하고, 점심 직후를 피합니다.",
+        signals: ["필수 참석자 가능", "회의실 가능", "앞뒤 30분 여유"],
+        tradeoff: "김서현은 직전 일정이 있지만 선택 참석이라 회의 목적은 유지됩니다.",
+        allFree: true,
+        alternates: ["오후 01:30", "오후 02:00", "오후 02:30"],
+      },
+      {
+        time: "오후 03:30",
+        range: "15:30-16:30",
+        label: "빠른 확정",
+        tone: "quick",
+        title: "추가 확인 없이 바로 저장 가능",
+        reason: "모든 참석자가 가능한 시간이고 남은 불확실성이 없습니다.",
+        signals: ["모두 가능", "외근 신호 없음", "저녁 전 종료"],
+        tradeoff: "회의 전 준비 시간이 짧아 사전 자료가 필요하면 약합니다.",
+        allFree: true,
+        alternates: ["오후 03:00", "오후 04:00", "오후 06:00"],
+      },
+    ],
+  },
+  {
+    day: "7.1. (수)",
+    candidates: [
+      {
+        time: "오전 10:30",
+        range: "10:30-11:30",
+        label: "집중 우선",
+        tone: "focus",
+        title: "오전 집중 흐름을 덜 끊는 후보",
+        reason: "점심 직전 압박이 적고, 핵심 참석자의 앞뒤 일정 간격이 넓습니다.",
+        signals: ["오전 시간대", "앞뒤 여유", "회의 전 준비 가능"],
+        tradeoff: "우희택의 hold 일정이 있어 선택 참석 여부만 확인하면 됩니다.",
+        allFree: false,
+        alternates: ["오전 10:00", "오전 11:00", "오전 11:30"],
+      },
+      {
+        time: "오후 02:30",
+        range: "14:30-15:30",
+        label: "대안",
+        tone: "normal",
+        title: "무난하지만 추천 근거는 약한 후보",
+        reason: "필수 참석자는 가능하지만 점심 이후 일정이 이어집니다.",
+        signals: ["필수 참석자 가능", "회의실 가능", "외근 신호 없음"],
+        tradeoff: "김서현과 우희택 모두 앞뒤 회의가 붙어 있어 논의 밀도가 낮아질 수 있습니다.",
+        allFree: false,
+        alternates: ["오후 02:00", "오후 03:00", "오후 03:30"],
+      },
+    ],
+  },
+  {
+    day: "7.2. (목)",
+    candidates: [
+      {
+        time: "오전 11:00",
+        range: "11:00-12:00",
+        label: "확인 필요",
+        tone: "check",
+        title: "좋은 후보지만 한 명의 맥락 확인 필요",
+        reason: "회의 목적에는 잘 맞지만 외근이 많은 요일 신호가 있습니다.",
+        signals: ["필수 참석자 가능", "점심 직후 아님", "회의실 가능"],
+        tradeoff: "은경수의 오전 외근 가능성만 확인하면 확정할 수 있습니다.",
+        allFree: false,
+        alternates: ["오전 10:30", "오전 11:30", "오후 12:00"],
+      },
+    ],
+  },
 ];
 
 const monthSchedule = {
@@ -451,20 +520,67 @@ function renderAvailabilityGrid() {
 
 function renderRecommendations() {
   recommendList.innerHTML = "";
-  recommendGroups.forEach((group, groupIndex) => {
+  let renderedCount = 0;
+  recommendCandidateGroups.forEach((group) => {
+    const candidates = group.candidates.filter((candidate) => !onlyFree || candidate.allFree);
+    if (candidates.length === 0) return;
+
     const day = document.createElement("section");
-    day.className = "recommend-day";
-    const chips = group.chips.map((chip, chipIndex) => {
-      const unavailable = !onlyFree && (chipIndex + groupIndex) % 5 === 0;
-      return `<button class="time-chip ${unavailable ? "unavailable" : ""}" type="button">${chip}</button>`;
+    day.className = "recommend-day candidate-section";
+    const cards = candidates.map((candidate, index) => {
+      const signals = candidate.signals.map((signal) => `<li>${signal}</li>`).join("");
+      const alternates = candidate.alternates.map((chip) => {
+        return `<button class="time-chip alt-chip" type="button" data-time-chip="${chip}">${chip}</button>`;
+      }).join("");
+      return `
+        <article class="candidate-card ${index === 0 && renderedCount === 0 ? "selected" : ""}">
+          <div class="candidate-head">
+            <span class="candidate-label ${candidate.tone}">${candidate.label}</span>
+            <button class="candidate-time" type="button" data-time-chip="${candidate.time}">
+              <strong>${candidate.time}</strong>
+              <span>${candidate.range}</span>
+            </button>
+          </div>
+          <div class="candidate-copy">
+            <h4>${candidate.title}</h4>
+            <p>${candidate.reason}</p>
+          </div>
+          <ul class="candidate-signals">${signals}</ul>
+          <p class="candidate-tradeoff">${candidate.tradeoff}</p>
+          <div class="candidate-actions">
+            <button class="candidate-select" type="button" data-time-chip="${candidate.time}">이 시간으로 설정</button>
+            <div class="candidate-alts" aria-label="가까운 대안 시간">${alternates}</div>
+          </div>
+        </article>
+      `;
     }).join("");
-    day.innerHTML = `<strong>${group.day}</strong><div class="time-chip-list">${chips}</div>`;
+    day.innerHTML = `<strong>${group.day}</strong><div class="candidate-card-list">${cards}</div>`;
+    renderedCount += candidates.length;
     recommendList.append(day);
   });
-  recommendList.querySelectorAll(".time-chip").forEach((chip) => {
-    chip.addEventListener("click", () => {
-      showToast(`${chip.textContent} 후보 시간을 선택했습니다.`);
-      document.querySelector("[data-time-start]").textContent = chip.textContent;
+
+  if (renderedCount === 0) {
+    recommendList.innerHTML = `
+      <section class="recommend-empty compact">
+        <p>모두 가능한 후보만으로는 조건을 만족하는 시간이 없습니다.</p>
+        <button type="button" data-relax-recommend>확인 필요 후보까지 보기</button>
+      </section>
+    `;
+    recommendList.querySelector("[data-relax-recommend]").addEventListener("click", () => {
+      onlyFree = false;
+      document.querySelector("[data-only-free]").checked = false;
+      renderRecommendations();
+    });
+    return;
+  }
+
+  recommendList.querySelectorAll("[data-time-chip]").forEach((chip) => {
+    chip.addEventListener("click", (event) => {
+      const time = event.currentTarget.dataset.timeChip;
+      showToast(`${time} 후보 시간을 선택했습니다.`);
+      document.querySelector("[data-time-start]").textContent = time;
+      recommendList.querySelectorAll(".candidate-card").forEach((card) => card.classList.remove("selected"));
+      event.currentTarget.closest(".candidate-card")?.classList.add("selected");
     });
   });
 }

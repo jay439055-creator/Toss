@@ -115,29 +115,32 @@
 - AI처럼 보이는 자동화보다, 기준이 보이는 추천이 더 설득력 있다.
 - 추천 후보는 “점수”보다 “판단 근거”를 전면에 둔다.
 
-### 5. Mobbin 공개 레퍼런스
+### 5. Mobbin 스케줄링 UI 레퍼런스
 
 대표 레퍼런스:
 
-- [Mobbin - Web Calendar UI](https://mobbin.com/explore/web/screens/calendar)
-- [Mobbin - Web Schedule Screen](https://mobbin.com/explore/web/screens/schedule)
-- [Mobbin - Mobile Calendar UI](https://mobbin.com/explore/mobile/screens/calendar)
-- [Mobbin - Mobile Schedule Screen](https://mobbin.com/explore/mobile/screens/schedule)
-- [Mobbin - Date Picker UI](https://mobbin.com/explore/mobile/ui-elements/date-picker)
-- [Mobbin - Time Picker UI](https://mobbin.com/explore/mobile/ui-elements/time-picker)
-- [Mobbin - Zoom Web Availability Calendar](https://mobbin.com/explore/screens/27de23e8-27a2-4343-9ac6-d9d6b2a8316e)
-- [Mobbin - Navan Web Meeting Scheduler](https://mobbin.com/explore/screens/b1db1203-084b-494f-9f26-53cb6c50ff24)
+- [SavvyCal meeting poll editor](https://mobbin.com/screens/7c900625-a5f6-4cfa-9856-27bc5637ddfa)
+- [Clockwise time selection](https://mobbin.com/screens/a4759d6c-3c26-4d04-9f45-abd41964199f)
+- [Clockwise find time with calendar](https://mobbin.com/screens/58c8805c-1d8d-4c03-b46b-092a9ea5e571)
+- [Clockwise suggestion list](https://mobbin.com/screens/7ac51823-dbad-4779-8eb1-8eb6a21f6e6a)
+- [Calendly one-off meeting](https://mobbin.com/screens/07cd605e-9cda-4519-9185-d8164fce1fad)
+- [Square appointment time selection](https://mobbin.com/screens/5c191789-20a8-4f82-8ee5-2f0be71714b4)
+- [Amie slot selection](https://mobbin.com/screens/c3d269b1-eb5e-4e56-856b-907f8f40c134)
+- [Fresha booking time selection](https://mobbin.com/screens/9b43fe75-dae4-4265-88f0-11d5203e3d14)
 
 관찰:
 
-- Mobbin의 공개 인덱스는 캘린더 화면을 Calendar, Schedule, Date Picker, Time Picker, Booking & Reserving 같은 패턴으로 나눈다.
-- 화면 단위로 보면 선택 UI, 후보 시간 리스트, 날짜 선택, 예약 확정 플로우가 풍부하다.
-- 다만 공개 페이지 기준으로는 실제 문제 해결 논리보다 시각 패턴 분류에 가깝다.
+- Clockwise는 날짜별 시간 슬롯을 보여주되 `BEST`, `Top pick`, `No conflicts`, `Also good`처럼 후보의 판단 상태를 함께 붙인다.
+- SavvyCal과 Calendly는 후보 선택과 원본 캘린더 그리드를 함께 유지해 사용자가 추천 결과를 검산할 수 있게 한다.
+- Square와 Fresha는 시간 선택 영역과 예약 요약 영역을 분리해, 사용자가 선택한 시간이 어떤 예약 맥락에 연결되는지 바로 확인하게 한다.
+- Amie처럼 촘촘한 슬롯 목록은 빠른 예약에는 유리하지만, 회의 목적에 맞는 좋은 시간을 판단하는 데에는 후보가 너무 같은 무게로 보이는 한계가 있다.
 
 우리에게 필요한 전환:
 
-- Mobbin은 화면 구성과 인터랙션 밀도를 참고하는 자료로 두고, 문제 정의의 주된 근거로 쓰지는 않는다.
-- 우리 과제의 핵심은 “예쁜 스케줄러”가 아니라 “회의 목적에 맞는 후보 판단을 돕는 캘린더”다.
+- 추천 시간은 파란 칩을 많이 보여주는 화면이 아니라, 후보를 `추천`, `빠른 확정`, `집중 우선`, `확인 필요`처럼 판단 가능한 묶음으로 보여줘야 한다.
+- 원본 free/busy 그리드는 버리지 않는다. 사용자가 추천 결과를 믿기 위해서는 검산할 수 있는 원본 맥락이 필요하다.
+- 확정 전에는 후보마다 추천 이유, 충족 조건, 남은 trade-off, 다음 액션이 보여야 한다.
+- Mobbin은 최종 문제 정의의 근거라기보다, 우리가 정의한 문제를 화면으로 설득력 있게 보여주기 위한 구조 참고로 둔다.
 
 ## 현재 문제 정의 후보
 

@@ -1,0 +1,19 @@
+# Documentation Index
+
+이 문서는 프로젝트 문서의 현재 위치를 빠르게 찾기 위한 인덱스다.
+
+## Decisions
+
+- [2026-07-01 추천 점수화 대신 판단 기준 중심 추천](decisions/2026-07-01-recommendation-criteria-vs-score.md)
+
+## References
+
+- [2026-07-01 Mobbin 추천/예약/비교 UI 레퍼런스](references/2026-07-01-mobbin-decision-patterns.md)
+
+## Plans
+
+- 아직 정리된 계획 문서 없음
+
+## Submission
+
+- 아직 정리된 제출 문서 없음

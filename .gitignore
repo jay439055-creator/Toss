@@ -1,2 +1,4 @@
 .DS_Store
 .omo/evidence/
+.omo/http-server.log
+.omo/http-server.pid

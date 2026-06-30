@@ -4,6 +4,7 @@
 
 ## Decisions
 
+- [2026-07-01 개인 사유를 보호하는 회의 시간 의사결정 지원](decisions/2026-07-01-privacy-preserving-meeting-decision-support.md)
 - [2026-07-01 추천 점수화 대신 판단 기준 중심 추천](decisions/2026-07-01-recommendation-criteria-vs-score.md)
 
 ## References
@@ -13,6 +14,7 @@
 
 ## Research
 
+- [2026-07-01 외부 AI 의견 통합 및 기존 방향 비교](research/2026-07-01-external-ai-feedback-synthesis.md)
 - [2026-07-01 회의 일정 조율 문제 리서치 맵](research/2026-07-01-meeting-problem-research-map.md)
 
 ## Plans

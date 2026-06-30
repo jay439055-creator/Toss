@@ -11,6 +11,10 @@
 - [2026-07-01 토스 Product Designer Challenge 2026 과제 브리프 분석](references/2026-07-01-toss-challenge-brief.md)
 - [2026-07-01 Mobbin 추천/예약/비교 UI 레퍼런스](references/2026-07-01-mobbin-decision-patterns.md)
 
+## Research
+
+- [2026-07-01 회의 일정 조율 문제 리서치 맵](research/2026-07-01-meeting-problem-research-map.md)
+
 ## Plans
 
 - 아직 정리된 계획 문서 없음

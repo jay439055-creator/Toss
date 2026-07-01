@@ -4,6 +4,8 @@
 
 ## Decisions
 
+- [2026-07-01 Cosmos React Clone 구현 방향](decisions/2026-07-01-cosmos-react-clone.md)
+- [2026-07-01 Toss Designer Challenge React Clone 구현 방향](decisions/2026-07-01-toss-designer-challenge-react-clone.md)
 - [2026-07-01 개인 사유를 보호하는 회의 시간 의사결정 지원](decisions/2026-07-01-privacy-preserving-meeting-decision-support.md)
 - [2026-07-01 추천 점수화 대신 판단 기준 중심 추천](decisions/2026-07-01-recommendation-criteria-vs-score.md)
 
@@ -20,8 +22,8 @@
 
 ## Plans
 
-- 아직 정리된 계획 문서 없음
+- [2026-07-01 회의 일정 조율 제품 플로우](plans/2026-07-01-scheduling-product-flow.md)
 
 ## Submission
 
-- 아직 정리된 제출 문서 없음
+- [2026-07-01 1번 답변 초안: 문제 정의](submission/2026-07-01-q1-problem-definition-draft.md)

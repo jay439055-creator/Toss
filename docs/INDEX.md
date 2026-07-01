@@ -4,6 +4,7 @@
 
 ## Decisions
 
+- [2026-07-01 양보 가능 범위를 다루는 일정 조율로 차별화](decisions/2026-07-01-differentiation-by-consent-boundary.md)
 - [2026-07-01 Cosmos React Clone 구현 방향](decisions/2026-07-01-cosmos-react-clone.md)
 - [2026-07-01 Toss Designer Challenge React Clone 구현 방향](decisions/2026-07-01-toss-designer-challenge-react-clone.md)
 - [2026-07-01 개인 사유를 보호하는 회의 시간 의사결정 지원](decisions/2026-07-01-privacy-preserving-meeting-decision-support.md)

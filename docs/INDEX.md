@@ -18,6 +18,7 @@
 ## Research
 
 - [2026-07-01 외부 AI 의견 통합 및 기존 방향 비교](research/2026-07-01-external-ai-feedback-synthesis.md)
+- [2026-07-01 에이전트 기반 회의 일정 조율 아이디어 검토](research/2026-07-01-agent-based-meeting-negotiation-idea.md)
 - [2026-07-01 회의 일정 조율 문제 리서치 맵](research/2026-07-01-meeting-problem-research-map.md)
 
 ## Plans

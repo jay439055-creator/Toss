@@ -11,6 +11,7 @@
 
 - [2026-07-01 토스 Product Designer Challenge 2026 과제 브리프 분석](references/2026-07-01-toss-challenge-brief.md)
 - [2026-07-01 Mobbin 추천/예약/비교 UI 레퍼런스](references/2026-07-01-mobbin-decision-patterns.md)
+- [2026-07-01 2022 토스 Product Designer Challenge 시사점](references/2026-07-01-toss-2022-challenge-lessons.md)
 
 ## Research
 

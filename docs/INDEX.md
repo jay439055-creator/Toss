@@ -4,6 +4,7 @@
 
 ## Decisions
 
+- [2026-07-05 토스 과제 방향 리셋](decisions/2026-07-05-direction-reset.md)
 - [2026-07-01 양보 가능 범위를 다루는 일정 조율로 차별화](decisions/2026-07-01-differentiation-by-consent-boundary.md)
 - [2026-07-01 Cosmos React Clone 구현 방향](decisions/2026-07-01-cosmos-react-clone.md)
 - [2026-07-01 Toss Designer Challenge React Clone 구현 방향](decisions/2026-07-01-toss-designer-challenge-react-clone.md)
@@ -24,6 +25,7 @@
 
 ## Plans
 
+- [2026-07-05 백지 재접근 리서치 계획](plans/2026-07-05-blank-slate-research-plan.md)
 - [2026-07-01 회의 일정 조율 제품 플로우](plans/2026-07-01-scheduling-product-flow.md)
 
 ## Submission

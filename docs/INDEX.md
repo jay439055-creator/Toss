@@ -19,9 +19,19 @@
 
 ## Research
 
+- [2026-07-05 ChatGPT 리서치 답변 통합 정리](research/2026-07-05-chatgpt-research-synthesis.md)
+- [2026-07-05 ChatGPT 리서치 답변 원문 보존 기록](research/2026-07-05-chatgpt-research-answer-archive.md)
 - [2026-07-01 외부 AI 의견 통합 및 기존 방향 비교](research/2026-07-01-external-ai-feedback-synthesis.md)
 - [2026-07-01 에이전트 기반 회의 일정 조율 아이디어 검토](research/2026-07-01-agent-based-meeting-negotiation-idea.md)
 - [2026-07-01 회의 일정 조율 문제 리서치 맵](research/2026-07-01-meeting-problem-research-map.md)
+
+### Research Raw Archive
+
+- [2026-07-05 ChatGPT 프롬프트 원문](research/raw/2026-07-05-chatgpt-prompts.md)
+- [2026-07-05 ChatGPT 답변 1: 경쟁 제품과 HCI/CSCW 리서치](research/raw/2026-07-05-chatgpt-answer-01-competitor-hci-research.txt)
+- [2026-07-05 ChatGPT 답변 2: 기존 솔루션과의 유사성 비판](research/raw/2026-07-05-chatgpt-answer-02-solution-differentiation-critique.txt)
+- [2026-07-05 ChatGPT 답변 3: 회의 형태 재설계 제안](research/raw/2026-07-05-chatgpt-answer-03-meeting-shape-finder.txt)
+- [2026-07-05 ChatGPT 답변 4: A/B 방향 비교](research/raw/2026-07-05-chatgpt-answer-04-two-direction-comparison.txt)
 
 ## Plans
 
